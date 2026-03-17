@@ -181,6 +181,17 @@
   body:not(.lang-jp) .chart-tab-btn.active { color: var(--accent); border-color: rgba(99,102,241,0.35); background: rgba(99,102,241,0.06); }
   .chart-view { display: none; }
   .chart-view.active { display: block; }
+  .split-chart-wrap { display: flex; gap: 0; align-items: flex-start; }
+  .split-chart-half { flex: 1; min-width: 0; padding: 0 20px; }
+  .split-chart-half:first-child { padding-left: 0; }
+  .split-chart-half:last-child { padding-right: 0; }
+  .split-chart-divider { width: 1px; background: var(--border); align-self: stretch; flex-shrink: 0; }
+  .split-chart-title { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
+  @media (max-width: 700px) {
+    .split-chart-wrap { flex-direction: column; gap: 24px; }
+    .split-chart-divider { display: none; }
+    .split-chart-half { padding: 0; }
+  }
   .chart-wrap { position: relative; flex: 1; min-height: 200px; }
   .stack-legend { display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
   .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-secondary); }

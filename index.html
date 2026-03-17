@@ -138,8 +138,7 @@
     <div class="chart-tabs">
       <button class="chart-tab-btn active" onclick="switchChartTab('country')" id="tab-country">요청 국가별</button>
       <button class="chart-tab-btn" onclick="switchChartTab('squad')" id="tab-squad">관련 스쿼드별</button>
-      <button class="chart-tab-btn" onclick="switchChartTab('funnel')" id="tab-funnel">Funnel 단계별</button>
-      <button class="chart-tab-btn" onclick="switchChartTab('prob')" id="tab-prob">UX 문제 유형별</button>
+      <button class="chart-tab-btn" onclick="switchChartTab('funnel')" id="tab-funnel">Funnel · 문제 유형</button>
     </div>
 
     <div class="chart-view active" id="view-country">
@@ -151,17 +150,23 @@
     </div>
 
     <div class="chart-view" id="view-funnel">
-      <div class="stack-legend">
-        <div class="legend-item"><div class="legend-dot s4-bg"></div>4 Unusable</div>
-        <div class="legend-item"><div class="legend-dot s3-bg"></div>3 Severe</div>
-        <div class="legend-item"><div class="legend-dot s2-bg"></div>2 Moderate</div>
-        <div class="legend-item"><div class="legend-dot s1-bg"></div>1 Irritant</div>
+      <div class="split-chart-wrap">
+        <div class="split-chart-half">
+          <div class="split-chart-title">Funnel 단계별</div>
+          <div class="stack-legend">
+            <div class="legend-item"><div class="legend-dot s4-bg"></div>4 Unusable</div>
+            <div class="legend-item"><div class="legend-dot s3-bg"></div>3 Severe</div>
+            <div class="legend-item"><div class="legend-dot s2-bg"></div>2 Moderate</div>
+            <div class="legend-item"><div class="legend-dot s1-bg"></div>1 Irritant</div>
+          </div>
+          <div class="funnel-bars" id="funnel-bars"></div>
+        </div>
+        <div class="split-chart-divider"></div>
+        <div class="split-chart-half">
+          <div class="split-chart-title">UX 문제 유형별</div>
+          <div class="chart-wrap" style="height:340px"><canvas id="probChart"></canvas></div>
+        </div>
       </div>
-      <div class="funnel-bars" id="funnel-bars"></div>
-    </div>
-
-    <div class="chart-view" id="view-prob">
-      <div class="chart-wrap"><canvas id="probChart"></canvas></div>
     </div>
   </div>
 
