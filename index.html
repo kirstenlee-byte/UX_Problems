@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UX 과락 대시보드 — 강남언니</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link rel="stylesheet" href="style.css">
 </head>
@@ -113,7 +114,7 @@
   <div class="kpi-row">
     <div class="kpi-card active" onclick="filterSeverity('all')" id="kpi-all">
       <div class="kpi-label" id="kpi-label-all">전체 이슈</div>
-      <div class="kpi-value" style="color:var(--current-accent)" id="kpi-total-val">—</div>
+      <div class="kpi-value accent-text" id="kpi-total-val">—</div>
       <div class="kpi-sub" id="kpi-sub-all">전체 UX 과락 항목</div>
     </div>
     <div class="kpi-card" onclick="filterSeverity('4 Unusable')" id="kpi-4">
@@ -133,135 +134,37 @@
     </div>
   </div>
 
-  <div class="country-row" id="country-row">
-    <div class="country-card">
-      <div class="country-card-header">
-        <span class="country-card-title" id="country-kr-title">🇰🇷 한국 요청</span>
-        <span class="country-card-total" id="country-kr-total">—</span>
-      </div>
-      <div class="country-progress-wrap">
-        <div class="country-progress-bg" id="country-kr-bar"></div>
-        <div class="country-progress-label">
-          <span id="country-kr-done">해결 완료 0건</span>
-          <span id="country-kr-pct">0%</span>
-        </div>
-      </div>
-      <div class="country-legend" id="country-kr-legend"></div>
-      <button class="country-detail-btn" id="country-kr-detail-btn" onclick="toggleCountryDetail()"><span class="detail-btn-text">진행 상황 상세 보기</span> <span class="detail-btn-arrow">▾</span></button>
-      <div class="country-detail-panel" id="country-kr-detail-panel">
-        <div class="country-vbar-area" id="country-kr-vbar"></div>
-      </div>
+  <div class="chart-card combo-chart-card" id="combo-chart-card">
+    <div class="chart-tabs">
+      <button class="chart-tab-btn active" onclick="switchChartTab('country')" id="tab-country">요청 국가별</button>
+      <button class="chart-tab-btn" onclick="switchChartTab('squad')" id="tab-squad">관련 스쿼드별</button>
+      <button class="chart-tab-btn" onclick="switchChartTab('funnel')" id="tab-funnel">Funnel 단계별</button>
+      <button class="chart-tab-btn" onclick="switchChartTab('prob')" id="tab-prob">UX 문제 유형별</button>
     </div>
-    <div class="country-card">
-      <div class="country-card-header">
-        <span class="country-card-title" id="country-jp-title">🇯🇵 일본 요청</span>
-        <span class="country-card-total" id="country-jp-total">—</span>
-      </div>
-      <div class="country-progress-wrap">
-        <div class="country-progress-bg" id="country-jp-bar"></div>
-        <div class="country-progress-label">
-          <span id="country-jp-done">해결 완료 0건</span>
-          <span id="country-jp-pct">0%</span>
-        </div>
-      </div>
-      <div class="country-legend" id="country-jp-legend"></div>
-      <button class="country-detail-btn" id="country-jp-detail-btn" onclick="toggleCountryDetail()"><span class="detail-btn-text">진행 상황 상세 보기</span> <span class="detail-btn-arrow">▾</span></button>
-      <div class="country-detail-panel" id="country-jp-detail-panel">
-        <div class="country-vbar-area" id="country-jp-vbar"></div>
-      </div>
-    </div>
-  </div>
 
-  <div class="charts-row">
-    <div class="chart-card">
-      <div class="chart-title-wrap">
-        <span class="chart-title" id="funnel-chart-title">Funnel 단계별 이슈 수</span>
-        <div class="chart-info-btn">?
-          <div class="chart-tooltip-panel">
-            <div class="tooltip-section-title">Severity Scale</div>
-            <div class="tooltip-item">
-              <div class="tooltip-item-header"><span class="sev-badge s4">4 Unusable</span></div>
-              <div class="tooltip-item-en">The user is not able to or will not want to use a particular part of the product because of the way that the product has been designed and implemented.</div>
-              <div class="tooltip-item-kr">제품의 설계 및 구현 방식 때문에 사용자가 제품의 특정 부분을 사용할 수 없거나 사용하고 싶어하지 않습니다.</div>
-              <div class="tooltip-item-jp">製品の設計・実装により、ユーザーが製品の特定部分を使用できない、または使いたくない状態。</div>
-            </div>
-            <div class="tooltip-item">
-              <div class="tooltip-item-header"><span class="sev-badge s3">3 Severe</span></div>
-              <div class="tooltip-item-en">The user will probably use or attempt to use the product here, but will be severely limited in his or her ability to do so.</div>
-              <div class="tooltip-item-kr">사용자는 제품을 사용하거나 사용을 시도하겠지만, 심각한 제약이 따릅니다.</div>
-              <div class="tooltip-item-jp">ユーザーは製品を使用または使用を試みるが、深刻な制約が伴う。</div>
-            </div>
-            <div class="tooltip-item">
-              <div class="tooltip-item-header"><span class="sev-badge s2">2 Moderate</span></div>
-              <div class="tooltip-item-en">The user will be able to use the product in most cases, but will have to undertake some moderate effort in getting around the problem.</div>
-              <div class="tooltip-item-kr">대부분의 경우, 사용자는 제품을 사용할 수 있지만 문제를 해결하기 위해 어느 정도 노력을 기울여야 합니다.</div>
-              <div class="tooltip-item-jp">ほとんどの場合、製品を使用できるが、問題を回避するためにある程度の努力が必要。</div>
-            </div>
-            <div class="tooltip-item">
-              <div class="tooltip-item-header"><span class="sev-badge s1">1 Irritant</span></div>
-              <div class="tooltip-item-en">The problem occurs only intermittently, can be circumvented easily, or is dependent on a standard that is outside the product's boundaries. Could also be a cosmetic problem.</div>
-              <div class="tooltip-item-kr">문제가 간헐적으로만 발생하거나, 쉽게 해결할 수 있거나, 제품을 넘어선 기준에 관련된 문제입니다. 형태나 미적인 측면의 문제일 수도 있습니다.</div>
-              <div class="tooltip-item-jp">問題は散発的・容易に回避可能か、製品範囲外の基準に関わるもの。外観や美観上の問題も含む。</div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="chart-view active" id="view-country">
+      <div class="chart-wrap" style="height:220px"><canvas id="countryChart"></canvas></div>
+    </div>
+
+    <div class="chart-view" id="view-squad">
+      <div class="chart-wrap" style="height:220px"><canvas id="squadChart"></canvas></div>
+    </div>
+
+    <div class="chart-view" id="view-funnel">
       <div class="stack-legend">
-        <div class="legend-item"><div class="legend-dot" style="background:#f87171"></div>4 Unusable</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#fb923c"></div>3 Severe</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#facc15"></div>2 Moderate</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#4ade80"></div>1 Irritant</div>
+        <div class="legend-item"><div class="legend-dot s4-bg"></div>4 Unusable</div>
+        <div class="legend-item"><div class="legend-dot s3-bg"></div>3 Severe</div>
+        <div class="legend-item"><div class="legend-dot s2-bg"></div>2 Moderate</div>
+        <div class="legend-item"><div class="legend-dot s1-bg"></div>1 Irritant</div>
       </div>
       <div class="funnel-bars" id="funnel-bars"></div>
     </div>
-    <div class="chart-card">
-      <div class="chart-title-wrap">
-        <span class="chart-title" id="prob-chart-title">UX 문제 유형별 빈도</span>
-        <div class="chart-info-btn">?
-          <div class="chart-tooltip-panel align-right">
-            <div class="tooltip-section-title tooltip-kr-title">UX 문제 유형</div>
-              <div class="tooltip-section-title tooltip-jp-title">UX問題タイプ</div>
-            <div class="tooltip-item">
-              <div class="tooltip-prob-name">UX Writing Fail</div>
-              <div class="tooltip-prob-desc">레이블, 안내문구 등 고객이 인지하는 단어 또는 문장에 발생하는 문제</div>
-              <div class="tooltip-prob-desc-jp">ラベル・案内文など、顧客が認識する言葉や文章に関する問題。</div>
-            </div>
-            <div class="tooltip-item">
-              <div class="tooltip-prob-name">Priority Fail</div>
-              <div class="tooltip-prob-desc">화면 상의 우선순위가 불명확하여 발생하는 문제</div>
-              <div class="tooltip-prob-desc-jp">画面上の優先順位が不明確で生じる問題。</div>
-            </div>
-            <div class="tooltip-item">
-              <div class="tooltip-prob-name">Cognitive Load Problem</div>
-              <div class="tooltip-prob-desc">고객에게 인지적 부하를 일으켜 선택에 어려움을 가중시키는 문제</div>
-              <div class="tooltip-prob-desc-jp">顧客に認知的負荷を与え、選択を困難にする問題。</div>
-            </div>
-            <div class="tooltip-item">
-              <div class="tooltip-prob-name">Domain Knowledge Problem</div>
-              <div class="tooltip-prob-desc">고객에게 높은 수준의 전문성을 요구하는 문제</div>
-              <div class="tooltip-prob-desc-jp">顧客に高い専門知識を要求する問題。</div>
-            </div>
-            <div class="tooltip-item">
-              <div class="tooltip-prob-name">Expectation Fail</div>
-              <div class="tooltip-prob-desc">고객과의 인터랙션에서 출력이 고객의 기대와 호응하지 않아 발생하는 문제 전반</div>
-              <div class="tooltip-prob-desc-jp">操作に対する出力が顧客の期待と合わず生じる問題全般。</div>
-            </div>
-            <div class="tooltip-item">
-              <div class="tooltip-prob-name">UX Consistency Fail</div>
-              <div class="tooltip-prob-desc">일관되지 못한 UX/UI로 인해 발생하는 문제</div>
-              <div class="tooltip-prob-desc-jp">一貫性のないUX/UIにより生じる問題。</div>
-            </div>
-            <div class="tooltip-item">
-              <div class="tooltip-prob-name">Poor UX Problem</div>
-              <div class="tooltip-prob-desc">제품이 갖춰야 할 기본적인 기능성 미달에 대한 문제</div>
-              <div class="tooltip-prob-desc-jp">製品が備えるべき基本的な機能性が不足している問題。</div>
-            </div>
-          </div>
-        </div>
-      </div>
+
+    <div class="chart-view" id="view-prob">
       <div class="chart-wrap"><canvas id="probChart"></canvas></div>
     </div>
   </div>
+
 
   <div class="trend-toggle-wrap">
     <button class="trend-toggle-btn" id="trend-toggle-btn" onclick="toggleTrend()">누적 추이 ↗</button>
@@ -274,13 +177,16 @@
       <div class="filters">
         <input class="search-input" id="searchInput" type="text" placeholder="이슈 검색...">
         <button class="filter-btn active" onclick="filterSeverity('all')" id="fb-all">전체</button>
-        <button class="filter-btn" onclick="filterSeverity('4 Unusable')" id="fb-4" style="color:var(--s4)">4 Unusable</button>
-        <button class="filter-btn" onclick="filterSeverity('3 Severe')" id="fb-3" style="color:var(--s3)">3 Severe</button>
-        <button class="filter-btn" onclick="filterSeverity('2 Moderate')" id="fb-2" style="color:var(--s2)">2 Moderate</button>
-        <button class="filter-btn" onclick="filterSeverity('1 Irritant')" id="fb-1" style="color:var(--s1)">1 Irritant</button>
+        <button class="filter-btn s4-text" onclick="filterSeverity('4 Unusable')" id="fb-4">4 Unusable</button>
+        <button class="filter-btn s3-text" onclick="filterSeverity('3 Severe')" id="fb-3">3 Severe</button>
+        <button class="filter-btn s2-text" onclick="filterSeverity('2 Moderate')" id="fb-2">2 Moderate</button>
+        <button class="filter-btn s1-text" onclick="filterSeverity('1 Irritant')" id="fb-1">1 Irritant</button>
         <span class="filter-divider"></span>
         <button class="filter-btn spec-filter-btn" onclick="toggleServerSpec()" id="fb-server-spec">✓ 개발 가능</button>
         <button class="reset-btn" onclick="resetAll()" id="reset-btn">초기화</button>
+        <span class="filter-divider"></span>
+        <button class="csv-import-btn" onclick="openCsvImport()" title="CSV 파일에서 이슈 가져오기">+ CSV 가져오기</button>
+        <input type="file" id="csv-file-input" accept=".csv" style="display:none" onchange="handleCsvUpload(event)">
       </div>
     </div>
     <table class="issue-table">
@@ -296,12 +202,39 @@
       <span id="table-count"></span>
       <div class="page-btns">
         <button class="page-btn" id="prevBtn" onclick="changePage(-1)">←</button>
-        <span id="page-indicator" style="padding:0 8px;"></span>
+        <span id="page-indicator" class="page-indicator"></span>
         <button class="page-btn" id="nextBtn" onclick="changePage(1)">→</button>
       </div>
     </div>
   </div>
 </main>
+
+<!-- CSV IMPORT MODAL -->
+<div class="csv-modal-overlay" id="csvModalOverlay" onclick="closeCsvImport(event)">
+  <div class="csv-modal">
+    <div class="csv-modal-title">📥 CSV 이슈 가져오기</div>
+    <div class="csv-modal-desc">CSV 파일을 업로드하면 새 이슈가 대시보드에 추가됩니다.<br>기존 ID와 중복되는 항목은 자동으로 덮어씁니다.</div>
+    <div class="csv-drop-zone" id="csvDropZone" onclick="document.getElementById('csv-file-input').click()">
+      <span class="drop-icon">📂</span>
+      파일을 드래그하거나 클릭해서 업로드<br>
+      <span class="hint-text">지원 형식: .csv (UTF-8)</span>
+    </div>
+    <div class="csv-col-map-info">
+      <b>지원 컬럼 (한국어/영문 헤더 모두 인식)</b><br>
+      번호 / id &nbsp;·&nbsp; 분기 / period &nbsp;·&nbsp; 퍼널 / funnel<br>
+      심각도 / severity &nbsp;·&nbsp; UX 문제 유형 / ux_problem<br>
+      문제 상황 / problem &nbsp;·&nbsp; 이슈 요약 / problem_rewritten<br>
+      관련 URL / related_url &nbsp;·&nbsp; 개발 가능 여부 / server_spec<br>
+      대략적 개발 방향 / dev_direction
+    </div>
+    <div class="csv-modal-actions">
+      <button class="csv-action-btn" onclick="downloadCsvTemplate()">양식 다운로드</button>
+      <button class="csv-action-btn" onclick="closeCsvImportDirect()">닫기</button>
+      <button class="csv-action-btn primary" onclick="document.getElementById('csv-file-input').click()">파일 선택</button>
+    </div>
+  </div>
+</div>
+<div class="csv-toast" id="csvToast"></div>
 
 <!-- MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
@@ -323,7 +256,6 @@
 </div>
 
 <div class="stack-tooltip" id="stackTooltip"></div>
-
 
 <script src="dashboard.js"></script>
 </body>
