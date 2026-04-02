@@ -973,8 +973,6 @@ function buildResolvedChart(){
     d.setDate(d.getDate()-(day===0?6:day-1));
     return d.toISOString().slice(0,10);
   }
-  function weekLabel(ws){const d=new Date(ws+'T00:00:00');return`${d.getMonth()+1}/${d.getDate()}`;}
-
   // 이슈별 날짜 (resolved_date 없으면 오늘)
   const issueDate=new Map();
   resolvedIssues.forEach(i=>issueDate.set(String(i.id),i.resolved_date||today));
@@ -987,6 +985,11 @@ function buildResolvedChart(){
   for(let d=new Date(minWeek+'T00:00:00');d.toISOString().slice(0,10)<=todayWeek;d.setDate(d.getDate()+7)){
     allWeeks.push(d.toISOString().slice(0,10));
   }
+
+  // 주 라벨: 해당 주에 실제 데이터가 있으면 가장 이른 실제 날짜로, 없으면 월요일 기준
+  const weekDataDates={};
+  allDates.forEach(date=>{const ws=getWeekStart(date);if(!weekDataDates[ws]||date<weekDataDates[ws])weekDataDates[ws]=date;});
+  function weekLabel(ws){const raw=weekDataDates[ws]||ws;const d=new Date(raw+'T00:00:00');return`${d.getMonth()+1}/${d.getDate()}`;}
   const weekLabels=allWeeks.map(weekLabel);
 
   // 그룹별 주간 카운트 → 누적
