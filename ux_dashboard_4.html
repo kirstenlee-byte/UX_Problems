@@ -965,13 +965,16 @@ function buildResolvedChart(){
   if(emptyEl)emptyEl.style.display='none';
   if(canvasEl)canvasEl.style.display='block';
 
-  // 주 단위 누적 차트용 헬퍼
-  const today=new Date().toISOString().slice(0,10);
+  // 주 단위 누적 차트용 헬퍼 (로컬 타임존 기준)
+  function localDateStr(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+  const _now=new Date();
+  const today=localDateStr(_now);
   function getWeekStart(dateStr){
-    const d=new Date(dateStr+'T00:00:00');
+    const [y,m,dy]=dateStr.split('-').map(Number);
+    const d=new Date(y,m-1,dy);
     const day=d.getDay();
     d.setDate(d.getDate()-(day===0?6:day-1));
-    return d.toISOString().slice(0,10);
+    return localDateStr(d);
   }
   // 이슈별 날짜 (resolved_date 없으면 오늘)
   const issueDate=new Map();
@@ -982,14 +985,14 @@ function buildResolvedChart(){
   const minWeek=getWeekStart(allDates.reduce((a,b)=>a<b?a:b));
   const todayWeek=getWeekStart(today);
   const allWeeks=[];
-  for(let d=new Date(minWeek+'T00:00:00');d.toISOString().slice(0,10)<=todayWeek;d.setDate(d.getDate()+7)){
-    allWeeks.push(d.toISOString().slice(0,10));
+  for(let d=new Date(minWeek.split('-')[0],minWeek.split('-')[1]-1,minWeek.split('-')[2]);localDateStr(d)<=todayWeek;d.setDate(d.getDate()+7)){
+    allWeeks.push(localDateStr(d));
   }
 
   // 주 라벨: 해당 주에 실제 데이터가 있으면 가장 이른 실제 날짜로, 없으면 월요일 기준
   const weekDataDates={};
   allDates.forEach(date=>{const ws=getWeekStart(date);if(!weekDataDates[ws]||date<weekDataDates[ws])weekDataDates[ws]=date;});
-  function weekLabel(ws){const raw=weekDataDates[ws]||ws;const d=new Date(raw+'T00:00:00');return`${d.getMonth()+1}/${d.getDate()}`;}
+  function weekLabel(ws){const raw=weekDataDates[ws]||ws;const[y,m,d]=raw.split('-').map(Number);return`${m}/${d}`;}
   const weekLabels=allWeeks.map(weekLabel);
 
   // 그룹별 주간 카운트 → 누적
