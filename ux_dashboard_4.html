@@ -757,7 +757,7 @@ function getFiltered(){return currentIssues().filter(issue=>{const sevOk=current
 function isResolved(issue){return (issue.status||'').includes('해결 완료');}
 function isExcluded(issue){return (issue.status||'').includes('개선 제외');}
 function isPlanned(issue){return (issue.status||'').includes('계획중');}
-function getActiveIssues(){return currentIssues().filter(i=>!isResolved(i)&&!isExcluded(i)&&!isPlanned(i));}
+function getActiveIssues(){return currentIssues().filter(i=>!isResolved(i)&&!isExcluded(i));}
 let showResolvedOnly=false;
 function viewResolvedIssues(){
   showResolvedOnly=true;currentPage=1;
