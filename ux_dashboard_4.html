@@ -995,11 +995,9 @@ function buildResolvedChart(){
   function weekLabel(ws){const raw=weekDataDates[ws]||ws;const[y,m,d]=raw.split('-').map(Number);return`${m}/${d}`;}
   const weekLabels=allWeeks.map(weekLabel);
 
-  // 그룹별 주간 카운트 → 누적
-  function makeCumulative(weekCounts,color,label){
-    let cum=0;
-    return{label,borderColor:color,backgroundColor:color+'22',borderWidth:2,pointRadius:4,pointHoverRadius:6,fill:false,tension:0.3,
-      data:allWeeks.map(w=>{cum+=(weekCounts[w]||0);return cum;})};
+  // 그룹별 주간 카운트 → 스택 바
+  function makeDataset(weekCounts,color,label){
+    return{label,data:allWeeks.map(w=>weekCounts[w]||0),backgroundColor:color+'bb',borderColor:color,borderWidth:1,borderRadius:4};
   }
 
   let datasets;
@@ -1008,39 +1006,34 @@ function buildResolvedChart(){
     const squads=['탐색','검색','핵심콘텐츠','관계','필수','기타'];
     const counts={};squads.forEach(sq=>{counts[sq]={};});
     resolvedIssues.forEach(i=>{const w=getWeekStart(issueDate.get(String(i.id)));const sq=i.squad||'기타';const k=counts[sq]?sq:'기타';counts[k][w]=(counts[k][w]||0)+1;});
-    datasets=squads.filter(sq=>Object.values(counts[sq]).some(v=>v>0)).map(sq=>makeCumulative(counts[sq],SQUAD_COLORS[sq],sq));
+    datasets=squads.filter(sq=>Object.values(counts[sq]).some(v=>v>0)).map(sq=>makeDataset(counts[sq],SQUAD_COLORS[sq],sq));
   } else if(currentResolvedGrouping==='severity'){
     const SEV_C={'4 Unusable':'#f87171','3 Severe':'#fb923c','2 Moderate':'#facc15','1 Irritant':'#4ade80'};
     const counts={};SEV_LEVELS.forEach(s=>{counts[s]={};});
     resolvedIssues.forEach(i=>{const w=getWeekStart(issueDate.get(String(i.id)));if(counts[i.severity])counts[i.severity][w]=(counts[i.severity][w]||0)+1;});
-    datasets=SEV_LEVELS.filter(s=>Object.values(counts[s]).some(v=>v>0)).map(s=>makeCumulative(counts[s],SEV_C[s],s));
+    datasets=SEV_LEVELS.filter(s=>Object.values(counts[s]).some(v=>v>0)).map(s=>makeDataset(counts[s],SEV_C[s],s));
   } else {
     const cColors={'KR':'#6366f1','JP':'#ec4899'};
     const periodIssues=currentData()[currentPeriod]||[];
     const originById=new Map(periodIssues.map(i=>[String(i.id),i.origin||'kr']));
     const counts={KR:{},JP:{}};
     resolvedIssues.forEach(i=>{const w=getWeekStart(issueDate.get(String(i.id)));const o=(issueOrigin.get(String(i.id))||originById.get(String(i.id))||'kr').toUpperCase();if(counts[o])counts[o][w]=(counts[o][w]||0)+1;});
-    datasets=['KR','JP'].filter(c=>Object.values(counts[c]).some(v=>v>0)).map(c=>makeCumulative(counts[c],cColors[c],c==='KR'?t().countryKrChart:t().countryJpChart));
+    datasets=['KR','JP'].filter(c=>Object.values(counts[c]).some(v=>v>0)).map(c=>makeDataset(counts[c],cColors[c],c==='KR'?t().countryKrChart:t().countryJpChart));
   }
 
   if(resolvedChartInst)resolvedChartInst.destroy();
   resolvedChartInst=new Chart(document.getElementById('resolvedChart').getContext('2d'),{
-    type:'line',
+    type:'bar',
     data:{labels:weekLabels,datasets},
     options:{
       responsive:true,maintainAspectRatio:false,
       plugins:{
         legend:{position:'top',labels:{font:{size:11},color:'#475569',boxWidth:12,padding:10}},
-        tooltip:{backgroundColor:'#ffffff',borderColor:'#e2e8f0',borderWidth:1,titleColor:'#0f172a',bodyColor:'#475569',padding:10,
-          callbacks:{
-            title:ctx=>`${ctx[0].label}주 누적`,
-            label:ctx=>` ${ctx.dataset.label}: ${ctx.raw}${t().chartUnit}`
-          }
-        }
+        tooltip:{backgroundColor:'#ffffff',borderColor:'#e2e8f0',borderWidth:1,titleColor:'#0f172a',bodyColor:'#475569',padding:10,callbacks:{label:ctx=>` ${ctx.dataset.label}: ${ctx.raw}${t().chartUnit}`}}
       },
       scales:{
-        x:{grid:{display:false},ticks:{color:'#475569',font:{size:11}}},
-        y:{grid:{color:'#e2e8f0'},beginAtZero:true,ticks:{color:'#64748b',font:{family:'DM Mono',size:10},stepSize:1,precision:0}}
+        x:{stacked:true,grid:{display:false},ticks:{color:'#475569',font:{size:12}}},
+        y:{stacked:true,grid:{color:'#e2e8f0'},ticks:{color:'#64748b',font:{family:'DM Mono',size:10},stepSize:1,precision:0}}
       }
     }
   });
