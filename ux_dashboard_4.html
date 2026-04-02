@@ -1060,7 +1060,7 @@ function refreshSnapshot(){
   document.getElementById("kpi-4-val").textContent=sevCount(issues,"4 Unusable");
   document.getElementById("kpi-3-val").textContent=sevCount(issues,"3 Severe");
   document.getElementById("kpi-2-val").textContent=sevCount(issues,"2 Moderate");
-  buildComboChart();buildSquadPopover();buildStatusPopover();renderTable();filterSeverity("all");
+  buildComboChart();buildSquadPopover();buildStatusPopover();renderTable();filterSeverity("all");buildResolvedChart();
 }
 
 function buildFunnelBars(){
